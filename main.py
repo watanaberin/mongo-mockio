@@ -1,49 +1,56 @@
-import random
 from optparse import OptionParser
+import json
+from func import choose, chooses, between
+from util import dotdict
+import copy
 
-class Choose():
-    def __init__(self, be_choosed) -> None:
-        self.be_choosed = be_choosed
-
-    def choose_action(self):
-        if not isinstance(self.be_choosed, list) or len(self.be_choosed) == 0:
-            return
-        idx = random.randrange(0, len(self.be_choosed))
-        return self.be_choosed[idx]
-
-
-class Chooses():
-    def __init__(self, be_choosed) -> None:
-        self.be_choosed = be_choosed
-
-    def choose_action(self):
-        if not isinstance(self.be_choosed, list) or len(self.be_choosed) == 0:
-            # todo 
-            return
-        
-        choosed_len = len(self.be_choosed)
-        fixed_sz = random.randrange(1, choosed_len)
-        if fixed_sz + 1 == choosed_len:
-            return self.be_choosed
-    
-        used_idxes = []
-        result = []
-        for _ in range(0, fixed_sz):
-            idx = random.randint(0, len(self.be_choosed))
-            while idx in used_idxes:
-                idx+=1
-                idx = idx % len(self.be_choosed)
-            used_idxes.append(idx)
-            result.append(self.be_choosed[idx])
-        return result
+DEFUALT_SIZE = 1000
 
 common_function_dict = {
-    '$choose': Choose,
-    '$chooses': Chooses,    
+    '$choose': choose.Choose,
+    '$chooses': chooses.Chooses,
+    '$between': between.Between,
 }
 
+def parse(values: dict):
+    result = {}
+    transform(values, result)
+    return result
+    
+def transform(values: dict, result: dict, real_name: str='', dot_name: str='',):
+    if real_name in common_function_dict.keys():
+        result[dot_name] = common_function_dict[real_name](values)
+    if isinstance(values, dict):
+        for name, inner_vals in values.items():
+            transform(inner_vals, result, name, add_last_with_dot_format(dot_name, name))
+    
+def add_last_with_dot_format(full: str, last: str) -> str:
+    if full.strip() == '':
+        return last
+    if last.startswith('$'):
+        return full
+    return f'{full}.{last}'
+           
 def main():
-    pass
-
+    parser = OptionParser()
+    parser.add_option('-f', '--filepath', dest='filepath',
+                      help='template json file path')
+    parser.add_option('-n', '--num', dest='num', type='int',
+                      help='how many datas need mock')
+    (options, args) = parser.parse_args()
+    
+    with open(options.filepath, 'r') as f:
+        template = json.load(f)
+    
+    for collection, values in template.items():
+        for i in range(0, options.num):
+            vals = copy.deepcopy(values)
+            dot_access_vals = dotdict.Dotdict(vals)
+            result = parse(values)
+            if i != 0 and i %options.num == 0:
+                pass
+            for k, func in result.items():
+                exec(f'dot_access_vals.{k} = func.apply()') 
+                
 if __name__ == '__main__':
     main()
