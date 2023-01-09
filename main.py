@@ -1,7 +1,7 @@
 from optparse import OptionParser
 import json
 from func import choose, chooses, between
-from util import dotdict
+from box import Box
 import copy
 
 DEFUALT_SIZE = 1000
@@ -45,12 +45,12 @@ def main():
     for collection, values in template.items():
         for i in range(0, options.num):
             vals = copy.deepcopy(values)
-            dot_access_vals = dotdict.Dotdict(vals)
-            result = parse(values)
+            result = parse(vals)
+            boxed_vals = Box(vals)
             if i != 0 and i %options.num == 0:
                 pass
             for k, func in result.items():
-                exec(f'dot_access_vals.{k} = func.apply()') 
+                exec(f'boxed_vals.{k} = func.apply()') 
                 
 if __name__ == '__main__':
     main()
