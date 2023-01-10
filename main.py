@@ -1,6 +1,6 @@
 from optparse import OptionParser
 import json
-from func import choose, chooses, between
+from func import choose, chooses, between, placeholder
 from box import Box
 import copy
 
@@ -17,9 +17,11 @@ def parse(values: dict):
     transform(values, result)
     return result
     
-def transform(values: dict, result: dict, real_name: str='', dot_name: str='',):
+def transform(values, result: dict, real_name: str='', dot_name: str='',):
     if real_name in common_function_dict.keys():
         result[dot_name] = common_function_dict[real_name](values)
+    elif isinstance(values, str) and values.startswith('$'):
+        result[dot_name] = placeholder.Placeholder(values)
     if isinstance(values, dict):
         for name, inner_vals in values.items():
             transform(inner_vals, result, name, add_last_with_dot_format(dot_name, name))
@@ -51,6 +53,5 @@ def main():
                 pass
             for k, func in result.items():
                 exec(f'boxed_vals.{k} = func.apply()') 
-                
 if __name__ == '__main__':
     main()
