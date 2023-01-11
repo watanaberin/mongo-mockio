@@ -5,11 +5,13 @@
 #### Description & Support features
 ##### Operators
 
-|   Operators |   Input Type
-|  ---------  | ------------  
-|   $choose   |    [Any...]   
-|   $chooses  |    [Any...]   
-|   $between  | [str_date | int] 
+|   Operators |   Input Type      | PlaceHolder Support
+|  ---------  | ----------------  | -------------------
+|   $choose   |    [Any...]       |          Yes
+|   $chooses  |    [Any...]       |          Yes
+|   $between  | [str_date OR int] |           No
+
+Operator is function which requires input and get output, input can be placeholder
 
 ##### PlaceHolder
 |   Operators |      Output Type
@@ -19,9 +21,13 @@
 |    $region  |     Any | [Any...]   
 |   $[custom] |     Any | [Any...]  
 
+PlaceHolder stands for data source you add in source dictionary,
+add source/city.json then you can use $city stands for a city list in source/city.json file.
+
 
 
 **Why & How to add a {custom} placeholder**
+
 If you have a city list in json format and want to use it as a data source, you can save the city list in the format of city.json file and place it under the resource folder, so you can use $city to get your data
 
 1. add {custom}.json file to source dictionary
@@ -30,8 +36,12 @@ If you have a city list in json format and want to use it as a data source, you 
 
 #### How to use
 
-- <Required> install
-- <Required> write a template json file
+- [Required] install
+```
+    pip install -r requirement.txt
+```
+- [Optional] make own placeholder
+- [Required] write a template json file
 ```
 {
     "user": {
@@ -57,9 +67,9 @@ If you have a city list in json format and want to use it as a data source, you 
     }
 }
 ```
-- <Optional> python main.py -h
-- <Optional> make own placeholder
-- <Required> exec
+- [Optional] python main.py -h
+eg. python main.py -f temp.json -n 1201 -m 127.0.0.1:27017 -d prod
+- [Required] exec
 
 data be like:
 ```
