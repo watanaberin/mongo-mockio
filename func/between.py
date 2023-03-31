@@ -9,7 +9,7 @@ def trans_to_date(date) -> datetime:
                 t = datetime.strptime(date, '%Y-%m-%d')
             return t
         except:
-            return None 
+            return datetime.now() 
 class Between():
     def __init__(self, candidates) -> None:
         self.candidates = candidates
@@ -20,13 +20,13 @@ class Between():
         fisrt = self.candidates[0]
         second = self.candidates[1]
         if isinstance(fisrt, int) and isinstance(second, int):
-            return random.randrange(fisrt, second)
+            return random.choice(self.candidates[:2])
         if isinstance(fisrt, str) and isinstance(second, str):
-                first_time = trans_to_date(fisrt)
-                second_time = trans_to_date(second)
-                if first_time and second_time:
-                    f = first_time.timestamp()
-                    s = second_time.timestamp()
-                    ts = random.randrange(f,s)
-                    datetime.fromtimestamp(ts)
-                    return datetime.fromtimestamp(ts)
+            first_time = trans_to_date(fisrt)
+            second_time = trans_to_date(second)
+            if first_time and second_time:
+                f = int(first_time.timestamp())
+                s = int(second_time.timestamp())
+                ts = random.randrange(f,s)
+                datetime.fromtimestamp(ts)
+                return datetime.fromtimestamp(ts)
