@@ -7,6 +7,8 @@ def init_option():
                       help='template json file path')
     parser.add_option('-n', '--num', dest='num', type='int',
                       help='how many datas need mock')
+    parser.add_option('-b', '--BatchNumber', dest='batch_num', type='int',
+                      help='number of bulk insert')
     parser.add_option('-m', '--host', dest='host', type='str',
                       help='mongo host,localhost:27017')
     parser.add_option('-d', '--db', dest='db', type='str',
@@ -14,9 +16,9 @@ def init_option():
     return parser.parse_args()
 
 def main():
-    tsfm = transformer.Transformer()
     (options, args) = init_option()
-    tsfm.run(options)
+    tsfm = transformer.Transformer(options)
+    tsfm.run()
     
 
 if __name__ == '__main__':

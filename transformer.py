@@ -12,8 +12,9 @@ class Transformer():
     '$chooses': chooses.Chooses,
     '$between': between.Between,
     }
-    DEFUALT_SIZE = 200
-
+    DEFUALT_SIZE = 1000
+    def __init__(self, options) -> None:
+        self.options = options
     def parse(self, values: dict):
         result = {}
         self.transform(values, result)
@@ -35,21 +36,27 @@ class Transformer():
             return full
         return f'{full}.{last}'
     
-    def run(self, options):
-        with open(options.filepath, 'r') as f:
+    def get_batch_number(self):
+        if not self.options.batch_num:
+            return self.DEFUALT_SIZE
+        return self.options.batch_num
+    
+    def run(self):
+        with open(self.options.filepath, 'r') as f:
             template = json.load(f)
-        client = MyClient(options.host, options.db)
+        client = MyClient(self.options.host, self.options.db)
         for collection, values in template.items():
-            with tqdm(total=options.num) as pbar:
+            print(f'Begin to generate {collection}')
+            with tqdm(total=self.options.num) as pbar:
                 round_result = []
-                for i in range(0, options.num):
+                for i in range(0, self.options.num):
                     vals = copy.deepcopy(values)
                     result = self.parse(vals)
                     boxed_vals = Box(vals)
                     for k, func in result.items():
-                        exec(f'boxed_vals.{k} = func.apply()')   
+                        exec(f'boxed_vals.{k} = func.apply()')
                     round_result.append(boxed_vals.to_dict())
-                    if i + 1 == options.num or (i + 1) % self.DEFUALT_SIZE == 0:
+                    if i + 1 == self.options.num or (i + 1) % self.get_batch_number() == 0:
                         client.bulk_insert(collection, round_result)
                         pbar.update(i+1)
-                        round_result = []
+                        round_result.clear()
