@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>mongo-mockio</title>
+    <!-- include bootstrap css for easy and pretty styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <style>
+        .container {
+            display: flex;
+            height: 100%;
+        }
+        .form-container, .display-container {
+            flex: 50%;
+            padding: 20px;
+        }
+        .display-container {
+            background-color: #f8f8f8;
+            overflow-y: scroll; /* In case of large amount of data */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="form-container">
+        <h1 class="mb-4">Upload new File</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="number">Import Size</label>
+                <input type="number" class="form-control" id="number" name="number">
+            </div>
+            <div class="form-group">
+                <label for="text">MongoDB Uri</label>
+                <input type="text" class="form-control" id="text" name="text">
+            </div>
+            <div class="form-group">
+                <label for="file">File input</label>
+                <input type="file" class="form-control-file" id="file" name="file">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <div class="display-container">
+        {% if file_content %}
+            <textarea class="form-control m-3" rows="10">{{ file_content }}</textarea>
+        {% endif %}
+    </div>
+</div>
+</body>
+</html>
