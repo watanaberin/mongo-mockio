@@ -18,7 +18,8 @@ Operator is function which requires input and get output, input can be placehold
 |  ---------  | -----------------------------  
 |    $ip      |     "x.x.x.x" | ["x.x.x.x"...]  
 |    $country |     Any | [Any...]  
-|    $region  |     Any | [Any...]   
+|    $region  |     Any | [Any...] 
+|    $incrementIntId | begin from 1 ...  
 |   $[custom] |     Any | [Any...]  
 
 PlaceHolder stands for data source you add in source dictionary,

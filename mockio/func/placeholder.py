@@ -3,7 +3,8 @@ from datetime import datetime
 import json
 
 features = [
-    '$ip'
+    '$ip',
+    '$incrementIntId'
 ]
 FIXED_RAMDOM_RANGE = 20
 
@@ -20,6 +21,13 @@ class Placeholder:
     def apply(self):
         if self._get_placeholder() == '$ip':
             return self._get_ip()
+        elif self._get_placeholder() == '$incrementIntId':
+            if len(self._cache) == 0:
+                self._cache.append(1)
+                return 1
+            else:
+                self._cache[0] += 1
+                return self._cache[0]
         elif len(self._cache) > 0:
             cache_len = len(self._cache)
             if self._muilt:

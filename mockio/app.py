@@ -5,6 +5,7 @@ import json
 from .utils.op import Op
 from .utils.transformer import Transformer
 import mockio
+from typing import Union
 app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = {'json'}
@@ -22,20 +23,9 @@ def upload_file():
             return redirect(request.url)
         file = request.files['file']
         data = json.load(file)
-        number = int(request.form.get("number"))
-        uri = request.form.get("text")
-        print(number)
-        print(uri)
+        number: Union[int, None] = request.form.get("number", type=int)
+        uri: Union[int, None] = request.form.get("text", type=str)
         op: Op = Op(data, uri, number)
         Transformer.RUN(op)
         return render_template("index.html", file_content=data)
-        # If the user does not select a file, the browser submits an
-        # empty file without a filename.
-        if file.filename == '':
-            flash('No selected file')
-            return redirect(request.url)
-        if file and allowed_file(file.filename):
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            return redirect(url_for('download_file', name=filename))
     return render_template("index.html")

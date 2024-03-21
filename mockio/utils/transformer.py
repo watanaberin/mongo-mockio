@@ -45,17 +45,19 @@ class Transformer():
         
     def run(self):
         for collection, values in self.op.template.items():
-            print(f'Begin to generate {collection}')
-            with tqdm(total=self.op.num) as pbar:
-                round_result = []
-                for i in range(0, self.op.num):
-                    vals = copy.deepcopy(values)
-                    result = self.parse(vals)
-                    boxed_vals = Box(vals)
-                    for k, func in result.items():
-                        exec(f'boxed_vals.{k} = func.apply()')
-                    round_result.append(boxed_vals.to_dict())
-                    if i + 1 == self.op.num or (i + 1) % self.get_batch_number() == 0:
-                        self.op.client.bulk_insert(collection, round_result)
-                        pbar.update(i+1)
-                        round_result.clear()
+            self.for_collection(collection, values)
+                        
+    def for_collection(self, collection: str, values: dict):
+        with tqdm(total=self.op.num) as pbar:
+            round_result = []
+            for i in range(0, self.op.num):
+                vals = copy.deepcopy(values)
+                result = self.parse(vals)
+                boxed_vals = Box(vals)
+                for k, func in result.items():
+                    exec(f'boxed_vals.{k} = func.apply()')
+                round_result.append(boxed_vals.to_dict())
+                if i + 1 == self.op.num or (i + 1) % self.get_batch_number() == 0:
+                    self.op.client.bulk_insert(collection, round_result)
+                    pbar.update(i+1)
+                    round_result.clear()
