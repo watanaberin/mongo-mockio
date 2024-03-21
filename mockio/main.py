@@ -1,6 +1,8 @@
 from optparse import OptionParser
-import transformer
-from op import Op
+import mockio.utils.transformer as transformer
+from .utils.op import Op
+from .utils.myclient import mclient
+import json
 def init_option():
     parser = OptionParser()
     parser.add_option('-f', '--filepath', dest='filepath',
@@ -17,10 +19,12 @@ def init_option():
 
 def main():
     (options, args) = init_option()
-    transformer.Transformer(options).run()
-    
-def from_web(op: Op):
+    with open(options.filepath, 'r') as f:
+        template = json.load(f)
+    client = mclient(options.host, options.db)
+    num = options.num
+    op: Op = Op(template, client, num)
     transformer.Transformer(op).run()
-    
+        
 if __name__ == '__main__':
     main()

@@ -67,9 +67,13 @@ If you have a city list in json format and want to use it as a data source, you 
     }
 }
 ```
-- [Optional] python main.py -h
+* cmd
+    - [Optional] python main.py -h
 eg. python main.py -f temp.json -n 1201 -m 127.0.0.1:27017 -d prod
-- [Required] exec
+    - [Required] exec
+web
+    - flask run
+    
 
 data be like:
 ```

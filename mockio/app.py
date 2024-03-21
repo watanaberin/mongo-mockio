@@ -2,7 +2,9 @@ import os
 from flask import Flask, flash, request, redirect, url_for, render_template
 from werkzeug.utils import secure_filename
 import json
-from op import Op
+from .utils.op import Op
+from .utils.transformer import Transformer
+import mockio
 app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = {'json'}
@@ -20,11 +22,12 @@ def upload_file():
             return redirect(request.url)
         file = request.files['file']
         data = json.load(file)
-        form = request.get_json()
-        number = form.get("number")
-        uri = form.get("text")
+        number = int(request.form.get("number"))
+        uri = request.form.get("text")
+        print(number)
+        print(uri)
         op: Op = Op(data, uri, number)
-        # from_web(op)
+        Transformer.RUN(op)
         return render_template("index.html", file_content=data)
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
