@@ -26,11 +26,11 @@
         <form method="post" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="number">Import Size</label>
-                <input type="number" class="form-control" id="number" name="number">
+                <input type="number" class="form-control" id="number" name="number", placeholder="Default: 1">
             </div>
             <div class="form-group">
                 <label for="text">MongoDB Uri</label>
-                <input type="text" class="form-control" id="text" name="text">
+                <input type="text" class="form-control" id="text" name="text", placeholder="Default: localhost:27017/test">
             </div>
             <div class="form-group">
                 <label for="file">File isnput</label>
@@ -41,9 +41,7 @@
     </div>
 
     <div class="display-container">
-        {% if file_content %}
             <textarea class="form-control m-3" rows="10">{{ file_content }}</textarea>
-        {% endif %}
     </div>
 </div>
 </body>
