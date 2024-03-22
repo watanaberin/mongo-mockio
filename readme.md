@@ -4,10 +4,13 @@
 Here is an example in mongo-mockio:
 
 1. Create a JSON file as temp.json
+In the first layer, 'user' is the MongoDB Collection name
+In the second layer, the key of the JSON body is the field of the collection
 ```
 {
     "user": {
         "name": {"$choose": "$name"},
+        "address": "$facker.address()",
         "age": {"$between": [21, 99]},
         "sex": {"$choose": ["female", "male"]},
         "area": {        
@@ -51,7 +54,7 @@ Usage:
 
 ##### PlaceHolder
 
-PlaceHolder is the source of data you add in mockio/source dictionary,
+PlaceHolder is the source of data you add in mockio/source dictionary with some default source. It also support python Facker library, use '$facker.fackermethod()' to call.
 eg. add source/city.json then you can use $city stands for a city list in source/city.json file.
 
 |   Operators |      Output Type
@@ -61,6 +64,7 @@ eg. add source/city.json then you can use $city stands for a city list in source
 |    $region  |     Any | [Any...] 
 |    $incrementIntId | begin from 1 ...  
 |   $[custom] |     Any | [Any...]  
+|   $faker.method() | Any
 
 ```
 {

@@ -1,10 +1,12 @@
 import random
 from datetime import datetime
 import json
-
+from faker import Faker
+from typing import Any
 features = [
     '$ip',
-    '$incrementIntId'
+    '$incrementIntId',
+    '$faker',
 ]
 FIXED_RAMDOM_RANGE = 20
 
@@ -14,40 +16,56 @@ class Placeholder:
     def __init__(self, ph: str, multi=False) -> None:
         self._ph = ph
         self._muilt = multi
-        
-        if self._get_placeholder() not in features:
+        self.faker = Faker()
+        if self._get_placeholder() not in features or self.is_sub_placeholder(self._get_placeholder()):
             self._get_from_source()
-
+            
+    def is_sub_placeholder(self, s: str):
+        if s.startswith('$facker.'):
+            return True
+        
     def apply(self):
         if self._get_placeholder() == '$ip':
             return self._get_ip()
         elif self._get_placeholder() == '$incrementIntId':
-            if len(self._cache) == 0:
-                self._cache.append(1)
-                return 1
-            else:
-                self._cache[0] += 1
-                return self._cache[0]
+            self.gen_increment_id()
+        elif self._get_placeholder().startswith('$facker.'):
+            return self.gen_faker_lib()
         elif len(self._cache) > 0:
-            cache_len = len(self._cache)
-            if self._muilt:
-                cap = FIXED_RAMDOM_RANGE if cache_len > FIXED_RAMDOM_RANGE else cache_len
-                cnt = random.randrange(0, cap)
-                res = set()
-                for _ in range(0, cnt):
-                    res_idx = random.randrange(0, cache_len)
-                    res.add(self._cache[res_idx])
-                return list(res)
-            else:
-                idx = random.randrange(0, cache_len)
-                return self._cache[idx]
+            return self.load_from_source()
+            
+    def load_from_source(self):
+        cache_len = len(self._cache)
+        if self._muilt:
+            cap = FIXED_RAMDOM_RANGE if cache_len > FIXED_RAMDOM_RANGE else cache_len
+            cnt = random.randrange(0, cap)
+            res = set()
+            for _ in range(0, cnt):
+                res_idx = random.randrange(0, cache_len)
+                res.add(self._cache[res_idx])
+            return list(res)
+        else:
+            idx = random.randrange(0, cache_len)
+            return self._cache[idx]
 
+    def gen_increment_id(self) -> int:
+        if len(self._cache) == 0:
+            self._cache.append(1)
+            return 1
+        else:
+            self._cache[0] += 1
+            return self._cache[0]
+
+    def gen_faker_lib(self) -> Any:
+        sub_name: str = self._get_placeholder().split('.')[-1]
+        return eval(f'self.faker.{sub_name}')
+        
     def _get_filename(self):
         if self._ph.startswith('$'):
             return self._ph[1:]
         return self._ph
 
-    def _get_placeholder(self):
+    def _get_placeholder(self) -> str:
         if not self._ph.startswith('$'):
             return '$' + self._ph
         return self._ph
