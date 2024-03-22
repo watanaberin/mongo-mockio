@@ -1,0 +1,24 @@
+{
+    "user": {
+        "shortId": "$incrementIntId",
+        "name": {"$choose": "$name"},
+        "age": {"$between": [21, 99]},
+        "sex": {"$choose": ["female", "male"]},
+        "area": {        
+            "country": {"$chooses": "$country"},
+            "region": {"$choose": ["Europe", "Africa", "Americas", "Asia", "Oceania"]}
+        },
+        "birthday": { "$between": ["1990-03-26", "2000-12-29"]},
+        "peer": {"$choose": [
+            {
+                "first": "dont know",
+                "second": "Unknown"
+            },
+            {
+                "first": "know it",
+                "second": "known"
+            }
+        ]},
+        "lastLoginAt": "$ip"
+    }
+}

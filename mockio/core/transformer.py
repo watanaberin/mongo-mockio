@@ -1,9 +1,9 @@
-from mockio.func import choose, chooses, between, placeholder
+from mockio.extesions import choose, chooses, between, placeholder
 from box import Box
 import copy
 from tqdm import tqdm
-from mockio.utils.op import Op
-
+from mockio.core.op import Op
+from typing import List
 
 class Transformer():
     common_function_dict = {
@@ -16,8 +16,8 @@ class Transformer():
         self.op = op
         
     @staticmethod
-    def RUN(op: Op):
-        Transformer(op).run()
+    def RUN(op: Op) -> List[str]:
+        return Transformer(op).run()
         
     def parse(self, values: dict):
         result = {}
@@ -43,10 +43,14 @@ class Transformer():
     def get_batch_number(self):
         return self.DEFUALT_SIZE
         
-    def run(self):
+    def run(self) -> List[str]:
+        records : List[str] = list() 
         for collection, values in self.op.template.items():
             self.for_collection(collection, values)
-                        
+            print_info = f'Import {self.op.num} documents into {collection}'
+            records.append(print_info)
+            print(print_info)        
+        return records
     def for_collection(self, collection: str, values: dict):
         with tqdm(total=self.op.num) as pbar:
             round_result = []

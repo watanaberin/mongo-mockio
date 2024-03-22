@@ -1,11 +1,9 @@
-import os
-from flask import Flask, flash, request, redirect, url_for, render_template
-from werkzeug.utils import secure_filename
+from flask import Flask, flash, request, redirect, render_template
 import json
-from .utils.op import Op
-from .utils.transformer import Transformer
-import mockio
-from typing import Union
+from mockio.core.op import Op
+from mockio.core.transformer import Transformer
+from typing import List
+
 app = Flask(__name__)
 
 ALLOWED_EXTENSIONS = {'json'}
@@ -22,10 +20,23 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-        data = json.load(file)
-        number: Union[int, None] = request.form.get("number", type=int)
-        uri: Union[int, None] = request.form.get("text", type=str)
-        op: Op = Op(data, uri, number)
-        Transformer.RUN(op)
-        return render_template("index.html", file_content=data)
+        data: dict= None
+        # make sure the json file in valid
+        try:
+            data = json.load(file)
+        except:
+            return render_template("index.html", hint="Invalid JSON Template, Please check your JSON file")
+        
+        number: int = request.form.get("number", default=100, type=int)
+        if number is not None and number <= 0:
+            return render_template("index.html", hint="Invalid Size, size should > 0")
+        uri: str = request.form.get("uri", default='mongodb://localhost:27017', type=str)
+        db: str = request.form.get("db", default='test', type=str)
+        op: Op = Op(template=data, mongodb_uri=uri, db_name=db, num=number)
+        if not op.client.is_connect() or not op.client.is_writable():
+            return render_template("index.html", hint="MongoDB is not connectable or writable")
+        
+        records: List[str] = Transformer.RUN(op)
+        print(records)
+        return render_template("index.html", hint=json.dumps(data, indent=4), records=records)
     return render_template("index.html")
