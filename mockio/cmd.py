@@ -9,6 +9,8 @@ from mockio.core.transformer import Transformer
 from mockio.core.op import Op
 from mockio.core.client import MongoDBclient
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
 def init_option():
     parser = OptionParser()
@@ -36,6 +38,19 @@ def init_option():
                       type='str',
                       default='test',
                     help='database name: test')
+    
+    if not parser.has_option('filepath') and os.getenv('TEMPLATE_FILE'):
+        parser.set_default('filepath', os.getenv('TEMPLATE_FILE'))
+        
+    if not parser.has_option('num') and  os.getenv('MOCK_NUMBER'):
+        parser.set_default('num', os.getenv('MOCK_NUMBER'))
+
+    if not parser.has_option('uri') and os.getenv('MONGODB_URI') :
+        parser.set_default('uri', os.getenv('MONGODB_URI'))
+        
+    if not parser.has_option('db'):
+        parser.set_default('db', os.getenv('MONGODB_DATABASE'))
+    
     return parser.parse_args()
 
 def main():

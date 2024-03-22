@@ -28,7 +28,7 @@ class Placeholder:
         if self._get_placeholder() == '$ip':
             return self._get_ip()
         elif self._get_placeholder() == '$incrementIntId':
-            self.gen_increment_id()
+            return self.gen_increment_id()
         elif self._get_placeholder().startswith('$facker.'):
             return self.gen_faker_lib()
         elif len(self._cache) > 0:
