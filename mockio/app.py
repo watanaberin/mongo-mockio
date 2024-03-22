@@ -37,6 +37,5 @@ def upload_file():
             return render_template("index.html", hint="MongoDB is not connectable or writable")
         
         records: List[str] = Transformer.RUN(op)
-        print(records)
         return render_template("index.html", hint=json.dumps(data, indent=4), records=records)
     return render_template("index.html")

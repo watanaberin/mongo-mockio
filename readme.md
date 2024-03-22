@@ -1,9 +1,46 @@
-### mongo-mockio
+# mongo-mockio
 
-**mongo-mockio** is a tool for mocking data into mongodb from template file
+**mongo-mockio** is a tool for mocking data into mongodb from well defined JSON file. It supports command line and web service to help mocking data into MongoDB.
+Here is an example in mongo-mockio:
 
-#### Description & Support features
+1. Create a JSON file as temp.json
+```
+{
+    "user": {
+        "name": {"$choose": "$name"},
+        "age": {"$between": [21, 99]},
+        "sex": {"$choose": ["female", "male"]},
+        "area": {        
+            "country": {"$chooses": "$country"},
+            "region": {"$choose": ["Europe", "Africa", "Americas", "Asia", "Oceania"]}
+        },
+        "birthday": { "$between": ["1990-03-26", "2000-12-29"]},
+        "peer": {"$choose": [
+            {
+                "first": "dont know",
+                "second": "Unknown"
+            },
+            {
+                "first": "know it",
+                "second": "known"
+            }
+        ]},
+        "lastLoginAt": "$ip"
+    }
+}
+```
+2. cd mockio
+3. python cmd.py -f temp.json -n 1201 -m 127.0.0.1:27017 -d prod
+
 ##### Operators
+
+Operator is a function which requires dataset you wanna to set in the field
+Usage: 
+```
+{
+    "name" : {"$choose": ["kim", "kiki"]}
+}
+```
 
 |   Operators |   Input Type      | PlaceHolder Support
 |  ---------  | ----------------  | -------------------
@@ -11,9 +48,12 @@
 |   $chooses  |    [Any...]       |          Yes
 |   $between  | [str_date OR int] |           No
 
-Operator is function which requires input and get output, input can be placeholder
 
 ##### PlaceHolder
+
+PlaceHolder is the source of data you add in mockio/source dictionary,
+eg. add source/city.json then you can use $city stands for a city list in source/city.json file.
+
 |   Operators |      Output Type
 |  ---------  | -----------------------------  
 |    $ip      |     "x.x.x.x" | ["x.x.x.x"...]  
@@ -22,10 +62,11 @@ Operator is function which requires input and get output, input can be placehold
 |    $incrementIntId | begin from 1 ...  
 |   $[custom] |     Any | [Any...]  
 
-PlaceHolder stands for data source you add in source dictionary,
-add source/city.json then you can use $city stands for a city list in source/city.json file.
-
-
+```
+{
+    "city" : {"$choose": "$city"}
+}
+```
 
 **Why & How to add a {custom} placeholder**
 
@@ -77,7 +118,7 @@ eg. python main.py -f temp.json -n 1201 -m 127.0.0.1:27017 -d prod
     - flask run
     
 
-data be like:
+example:
 ```
 {'name': 'Jihyo', 'age': 88, 'sex': 'female', 'area': {'country': ['Aruba', 'Kiribati', 'Brunei Darussalam', 'Gambia', 'Dominican Republic', 'Belarus', 'Philippines', 'Burundi'], 'region': 'Africa'}, 'birthday': datetime.datetime(1991, 5, 4, 8, 5, 5), 'peer': {'first': 'know it', 'second': 'known'}, 'lastLoginAt': '89.66.239.224'}
 {'name': 'Tzuyu', 'age': 90, 'sex': 'female', 'area': {'country': ['United States of America', 'Kiribati', 'Germany', 'Zambia', 'Brazil', 'Austria', 'Angola', 'Curaçao', 'Jersey'], 'region': 'Africa'}, 'birthday': datetime.datetime(1993, 11, 25, 16, 31, 9), 'peer': {'first': 'dont know', 'second': 'Unknown'}, 'lastLoginAt': '119.225.158.21'}
