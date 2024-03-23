@@ -1,5 +1,5 @@
 # mongo-mockio
-
+[Chinese](./readme-zh.md)
 **mongo-mockio** is a tool for mocking data into mongodb from well defined JSON file. It supports command line and web service to help mocking data into MongoDB.
 Here is an example in mongo-mockio:
 
