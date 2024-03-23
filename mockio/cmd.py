@@ -59,6 +59,8 @@ def main():
     with open(options.filepath, 'r') as f:
         template = json.load(f)
     op: Op = Op(template, options.uri, options.db, options.num)
+    if not op.client.is_connect() or not op.client.is_writable():
+        return
     Transformer(op).run()
         
 if __name__ == '__main__':
