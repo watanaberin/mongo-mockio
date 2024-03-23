@@ -1,4 +1,4 @@
-from mockio.extesions import choose, chooses, between, placeholder
+from mockio.extesions import common_function_dict, placeholder
 from box import Box
 import copy
 from tqdm import tqdm
@@ -6,11 +6,6 @@ from mockio.core.op import Op
 from typing import List
 
 class Transformer():
-    common_function_dict = {
-    '$choose': choose.Choose,
-    '$chooses': chooses.Chooses,
-    '$between': between.Between,
-    }
     DEFUALT_SIZE = 1000
     def __init__(self, op: Op) -> None:
         self.op = op
@@ -25,8 +20,8 @@ class Transformer():
         return result
         
     def transform(self, values, result: dict, real_name: str='', dot_name: str='',):
-        if real_name in self.common_function_dict.keys():
-            result[dot_name] = self.common_function_dict[real_name](values)
+        if real_name in common_function_dict.keys():
+            result[dot_name] = common_function_dict[real_name](values)
         elif isinstance(values, str) and values.startswith('$'):
             result[dot_name] = placeholder.Placeholder(values)
         if isinstance(values, dict):

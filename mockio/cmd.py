@@ -4,6 +4,7 @@ curPath = os.path.abspath(os.path.dirname(__file__))
 rootPath = os.path.split(curPath)[0]
 sys.path.append(rootPath)
 
+import mockio.extesions
 from optparse import OptionParser
 from mockio.core.transformer import Transformer
 from mockio.core.op import Op
