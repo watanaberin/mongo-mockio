@@ -10,7 +10,7 @@ In the second layer, the key of the JSON body is the field of the collection
 {
     "user": {
         "name": {"$choose": "$name"},
-        "address": "$facker.address()",
+        "address": "$faker.address()",
         "age": {"$between": [21, 99]},
         "sex": {"$choose": ["female", "male"]},
         "area": {        
@@ -54,7 +54,7 @@ Usage:
 
 ##### PlaceHolder
 
-PlaceHolder is the source of data you add in mockio/source dictionary with some default source. It also support python Facker library, use '$facker.fackermethod()' to call.
+PlaceHolder is the source of data you add in mockio/source directory with some default source. It also supports the Python Faker library - use '$faker.method()' to call any Faker method.
 eg. add source/city.json then you can use $city stands for a city list in source/city.json file.
 
 |   Operators |      Output Type

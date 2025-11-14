@@ -1,4 +1,4 @@
-from mockio.extesions import common_function_dict, placeholder
+from mockio.extensions import common_function_dict, placeholder
 from box import Box
 import copy
 from tqdm import tqdm
@@ -6,7 +6,7 @@ from mockio.core.op import Op
 from typing import List
 
 class Transformer():
-    DEFUALT_SIZE = 1000
+    DEFAULT_SIZE = 1000
     def __init__(self, op: Op) -> None:
         self.op = op
         
@@ -36,7 +36,7 @@ class Transformer():
         return f'{full}.{last}'
     
     def get_batch_number(self):
-        return self.DEFUALT_SIZE
+        return self.DEFAULT_SIZE
         
     def run(self) -> List[str]:
         records : List[str] = list() 
@@ -54,9 +54,15 @@ class Transformer():
                 result = self.parse(vals)
                 boxed_vals = Box(vals)
                 for k, func in result.items():
-                    exec(f'boxed_vals.{k} = func.apply()')
+                    # Apply the placeholder function and set the value using attribute access
+                    keys = k.split('.')
+                    current = boxed_vals
+                    for key in keys[:-1]:
+                        current = getattr(current, key)
+                    setattr(current, keys[-1], func.apply())
                 round_result.append(boxed_vals.to_dict())
                 if i + 1 == self.op.num or (i + 1) % self.get_batch_number() == 0:
+                    batch_size = len(round_result)
                     self.op.client.bulk_insert(collection, round_result)
-                    pbar.update(i+1)
+                    pbar.update(batch_size)
                     round_result.clear()
