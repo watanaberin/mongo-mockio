@@ -20,12 +20,14 @@ def upload_file():
             flash('No file part')
             return redirect(request.url)
         file = request.files['file']
-        data: dict= None
-        # make sure the json file in valid
+        data: dict = None
+        # make sure the json file is valid
         try:
             data = json.load(file)
-        except:
-            return render_template("index.html", hint="Invalid JSON Template, Please check your JSON file")
+        except json.JSONDecodeError as e:
+            return render_template("index.html", hint=f"Invalid JSON Template: {str(e)}")
+        except Exception as e:
+            return render_template("index.html", hint=f"Error reading file: {str(e)}")
         
         number: int = request.form.get("number", default=100, type=int)
         if number is not None and number <= 0:

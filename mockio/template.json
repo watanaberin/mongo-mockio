@@ -2,7 +2,7 @@
     "user": {
         "shortId": "$incrementIntId",
         "name": {"$choose": "$name"},
-        "address": "$facker.address()",
+        "address": "$faker.address()",
         "age": {"$between": [21, 99]},
         "sex": {"$choose": ["female", "male"]},
         "area": {        

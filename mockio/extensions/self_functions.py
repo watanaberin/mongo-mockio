@@ -42,18 +42,17 @@ class Between(AbstractFunction):
     def apply(self):
         if not isinstance(self.candidates, list) or len(self.candidates) < 2:
             return
-        fisrt = self.candidates[0]
+        first = self.candidates[0]
         second = self.candidates[1]
-        if isinstance(fisrt, int) and isinstance(second, int):
-            return random.choice(self.candidates[:2])
-        if isinstance(fisrt, str) and isinstance(second, str):
-            first_time = trans_to_date(fisrt)
+        if isinstance(first, int) and isinstance(second, int):
+            return random.randint(first, second)
+        if isinstance(first, str) and isinstance(second, str):
+            first_time = trans_to_date(first)
             second_time = trans_to_date(second)
             if first_time and second_time:
                 f = int(first_time.timestamp())
                 s = int(second_time.timestamp())
-                ts = random.randrange(f,s)
-                datetime.fromtimestamp(ts)
+                ts = random.randrange(f, s)
                 return datetime.fromtimestamp(ts)
 
 class Choose(AbstractFunction):

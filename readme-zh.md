@@ -1,7 +1,7 @@
 # mongo-mockio
 
 ## 项目描述
-`mongo-mockio`是模拟MongoDB数据工具，利用提供的 JSON 文件模板，通过命令行操作或web页面来模拟数据。它内置了诸如（choose/chooses/between）等函数，并已接入Facker数据库，用户只需使用`$facker.xxx`标志符进行调用。并且，它还支持用户自定义数据源来模拟bson对象。
+`mongo-mockio`是模拟MongoDB数据工具，利用提供的 JSON 文件模板，通过命令行操作或web页面来模拟数据。它内置了诸如（choose/chooses/between）等函数，并已接入Faker数据库，用户只需使用`$faker.xxx`标志符进行调用。并且，它还支持用户自定义数据源来模拟bson对象。
 
 ## 技术堆栈
 - MongoDB
@@ -24,7 +24,7 @@
 1. web 参数
 
 ## 使用说明
-在提供的 JSON 模板文件中，你可以使用内置函数，如`$choose`、`$chooses`、和`$between`，或者接入Facker数据库进行数据模拟，只需使用`$facker.xxx`标志符进行调用。
+在提供的 JSON 模板文件中，你可以使用内置函数，如`$choose`、`$chooses`、和`$between`，或者接入Faker数据库进行数据模拟，只需使用`$faker.xxx`标志符进行调用。
 
 同时也支持使用你自己定义的数据源来模拟 BSON 对象, 在`source/ `文件下添加 {custom}.json 文件, 在 JSON 模版文件中就能够使用 `${custom}` 来作为数据源。
 
